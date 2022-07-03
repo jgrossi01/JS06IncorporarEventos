@@ -28,18 +28,25 @@ class Reservation {
 }
 
 const arrayReservations = [];
-let keepBuying;
+let keepBuying; 
 
-function buy(){
-    do {
+do {
     let reserveThis;
-    let modelInput = prompt("Que modelo desea reservar?");
+    let modelInput = prompt("Que modelo desea reservar? Podemos ofrecerle los siguientes:\n" + availableCars());
 
     if (modelInput && isNaN(modelInput)){
         modelInput = modelInput.toLowerCase();
-        reserveThis = arrayCars.find(model => (model.name).toLowerCase() === modelInput);
-    } else {
-        alert('No encontramos el modelo solicitado');
+        reserveThis = arrayCars.find(model => model.name.toLowerCase() === modelInput);
+        while(!reserveThis && keepBuying) {
+            keepBuying = confirm('No encontramos el modelo solicitado. Desea seguir comprando?')
+            if(keepBuying){
+                modelInput = prompt("Que modelo desea reservar?");
+                modelInput = modelInput.toLowerCase();
+                reserveThis = arrayCars.find(model => model.name.toLowerCase() === modelInput);
+            } else {
+                break;
+            }
+        }
     }
 
     let quantityInput;
@@ -67,39 +74,104 @@ function buy(){
         let name = reserveThis.name;
         let dayprice = reserveThis.dayprice;
         let total = Number(reserveThis.dayprice) * daysInput * quantityInput;
-        console.log(total);
-        arrayReservations.push(new Reservation (nextIndexOf(arrayReservations), name, quantityInput, daysInput, dayprice, total));
-        sum('total');
+        saveThis(name, quantityInput, daysInput, dayprice, total);   
 
     } else {
         alert('Algo salio mal');
     }
 
-    keepBuying = confirm('Quiere seguir comprando?');
+    keepBuying = confirm('Quiere seguir comprando?')
+} while(keepBuying);
 
-    } while(keepBuying);
+
+let tieneCupon;
+let errorCupon;
+let devolucionCupon;
+let totalDescuento;
+let finalqty;
+let finaltotal;
+
+
+
+if (arrayReservations.length > 0){
+    finalqty = arrayReservations.reduce((a, b) => a + b['quantity'], 0);
+    finaltotal = arrayReservations.reduce((a, b) => a + b['total'], 0);
+
+    tieneCupon = confirm("Tiene un cupón de descuento?");
+    while (tieneCupon) {
+        if (errorCupon) {
+          tieneCupon = confirm("No encontramos el cupón. Desea volver a intentar?");
+          if (tieneCupon) {
+            codigoCupon = prompt(`Ingrese su cupón`);
+          }
+        } else {
+          codigoCupon = prompt(`Ingrese su cupón`);
+        }
+
+        if (codigoCupon) {
+          devolucionCupon = aplicarCupon(codigoCupon.toLowerCase());
+        }
+    }
+    
+    console.log('Reservó correctamente '+ finalqty +' vehiculos por un total de $'+ finaltotal);
+    if(devolucionCupon) {
+        console.log(devolucionCupon);
+    }
+} else {
+    console.log('No realizó ninguna reserva.')
 }
+
+console.log(arrayReservations);
 
 function nextIndexOf(array) {
     return array.length +1;
 };
 
-function sum (key){
-    const finaltotal = arrayReservations.reduce((a, b) => a + b[key], 0);
-    const msj = document.getElementById("msj");
-    const msjtitle = document.getElementById("msjtitle");
-    const msjmsj = document.getElementById("msjmsj");
-    msjmsj.innerText = finaltotal;
-    msjtitle.innerText = 'Su compra se realizó con exito';
-    
-
-    console.log(finaltotal);
+function availableCars() {
+    return arrayCars.map(u => u.name).join(`\n`);
 }
 
-console.log(arrayReservations);
+function saveThis(name, quantityInput, daysInput, dayprice, total){
+    let id = nextIndexOf(arrayReservations);
+    arrayReservations.push(new Reservation (id, name, quantityInput, daysInput, dayprice, total));
+    console.log('Se agregó a tu carrito '+ quantityInput +' '+ name +' por '+ daysInput +' días. Total parcial: $'+ total);
+}
 
+function aplicarCupon(codigoCupon) {
+    switch (codigoCupon) {
+      case "bariloche":
+        totalDescuento = finaltotal - Number(finaltotal) * 0.1;
+        tieneCupon = false;
+        return `Se le aplicó el descuento "bariloche" del 10% sobre $${finaltotal}.</br>Su monto a pagar es de $${totalDescuento}`;
+      case "rentit2022":
+        totalDescuento = finaltotal - Number(finaltotal) * 0.15;
+        tieneCupon = false;
+        return `Se le aplicó el descuento "rentit" del 15% sobre $${finaltotal}.</br>Su monto a pagar es de $${totalDescuento}`;
+      default:
+        errorCupon = true;
+        return false;
+    }
+}
 
-// Cargar contenido
+/* NUEVO */
+
+function addMsj (msj){
+    const msjbox = document.getElementById('msj');
+    if (msjbox.classList.contains('hidden')) {
+        msjbox.classList.remove("hidden");
+        console.log(msjbox.childNodes);
+        msjbox.childNodes[3].innerText += '<p>'+msj+'</p>';
+    }
+}
+
+function createLi (){
+    for (const car of arrayCars){
+        const selected = document.getElementById('modelInput');
+        selected.innerHTML += `<option>${car.name}</option>`;
+    }
+}
+createLi();
+
 function removeContent(){
     content = document.getElementById("cards");
     content.innerHTML = '';
@@ -112,8 +184,6 @@ function loadCards(){
         let card = document.createElement("section");
         card.classList.add("text-gray-600");
         card.classList.add("body-font");
-        // Pruebo seguir escribiendo codigo sdf Bash
-        
 
     card.innerHTML =    `
                         <div class="container max-w-7xl my-10 mx-auto px-4 sm:px-6 lg:px-8 card" id="${car.id}">
