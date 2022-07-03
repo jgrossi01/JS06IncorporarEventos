@@ -112,7 +112,7 @@ function loadCards(){
         let card = document.createElement("section");
         card.classList.add("text-gray-600");
         card.classList.add("body-font");
-        // Pruebo seguir escribiendo codigo
+        // Pruebo seguir escribiendo codigo sdf
 
     card.innerHTML =    `
                         <div class="container max-w-7xl my-10 mx-auto px-4 sm:px-6 lg:px-8 card" id="${car.id}">
