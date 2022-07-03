@@ -28,7 +28,7 @@ class Reservation {
 }
 
 const arrayReservations = [];
-let keepBuying; 
+let keepBuying = true;
 
 do {
     let reserveThis;
@@ -83,15 +83,12 @@ do {
     keepBuying = confirm('Quiere seguir comprando?')
 } while(keepBuying);
 
-
 let tieneCupon;
 let errorCupon;
 let devolucionCupon;
 let totalDescuento;
 let finalqty;
 let finaltotal;
-
-
 
 if (arrayReservations.length > 0){
     finalqty = arrayReservations.reduce((a, b) => a + b['quantity'], 0);
@@ -114,11 +111,15 @@ if (arrayReservations.length > 0){
     }
     
     console.log('Reservó correctamente '+ finalqty +' vehiculos por un total de $'+ finaltotal);
+    addMsj('Reservó correctamente '+ finalqty +' vehiculos por un total de $'+ finaltotal, true);
+    
     if(devolucionCupon) {
         console.log(devolucionCupon);
     }
 } else {
-    console.log('No realizó ninguna reserva.')
+    console.log('No realizó ninguna reserva.');
+    addMsj('No realizó ninguna reserva.',true);
+    
 }
 
 console.log(arrayReservations);
@@ -135,6 +136,7 @@ function saveThis(name, quantityInput, daysInput, dayprice, total){
     let id = nextIndexOf(arrayReservations);
     arrayReservations.push(new Reservation (id, name, quantityInput, daysInput, dayprice, total));
     console.log('Se agregó a tu carrito '+ quantityInput +' '+ name +' por '+ daysInput +' días. Total parcial: $'+ total);
+    addMsj('Se agregó a tu carrito '+ quantityInput +' '+ name +' por '+ daysInput +' días. Total parcial: $'+ total);
 }
 
 function aplicarCupon(codigoCupon) {
@@ -155,12 +157,19 @@ function aplicarCupon(codigoCupon) {
 
 /* NUEVO */
 
-function addMsj (msj){
+function addMsj (msj, final = null){
     const msjbox = document.getElementById('msj');
+    const msjmsj = document.getElementById('msjmsj');
+    const msjfinal = document.getElementById('msjfinal');    
+    
     if (msjbox.classList.contains('hidden')) {
         msjbox.classList.remove("hidden");
-        console.log(msjbox.childNodes);
-        msjbox.childNodes[3].innerText += '<p>'+msj+'</p>';
+    }
+
+    if (final){
+        msjfinal.innerHTML += '<p>'+msj+'</p>';
+    } else {
+        msjmsj.innerHTML += '<p>'+msj+'</p>';
     }
 }
 
