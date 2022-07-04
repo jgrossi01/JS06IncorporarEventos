@@ -81,53 +81,53 @@ do {
         alert('Algo salio mal');
     }
 
-    keepBuying = confirm('Quiere seguir comprando?')
+    keepBuying = confirm('Quiere seguir comprando?');
 } while(keepBuying);
 
-let tieneCupon;
-let errorCupon;
-let devolucionCupon;
-let totalDescuento;
-let finalqty;
-let finaltotal;
+let hasVoucher;
+let cuponError;
+let voucherReturn;
+let totalDiscount;
+let finalQty;
+let finalTotal;
 
 if (arrayReservations.length > 0){
-    finalqty = arrayReservations.reduce((a, b) => a + b['quantity'], 0);
-    finaltotal = arrayReservations.reduce((a, b) => a + b['total'], 0);
+    finalQty = arrayReservations.reduce((a, b) => a + b['quantity'], 0);
+    finalTotal = arrayReservations.reduce((a, b) => a + b['total'], 0);
 
-    tieneCupon = confirm("Tiene un cupón de descuento?");
-    while (tieneCupon) {
-        if (errorCupon) {
-          tieneCupon = confirm("No encontramos el cupón. Desea volver a intentar?");
-          if (tieneCupon) {
-            codigoCupon = prompt(`Ingrese su cupón`);
+    hasVoucher = confirm("Tiene un cupón de descuento?");
+    while (hasVoucher) {
+        if (cuponError) {
+          hasVoucher = confirm("No encontramos el cupón. Desea volver a intentar?");
+          if (hasVoucher) {
+            voucherCode = prompt(`Ingrese su cupón`);
           }
         } else {
-          codigoCupon = prompt(`Ingrese su cupón`);
+            voucherCode = prompt(`Ingrese su cupón`);
         }
 
-        if (codigoCupon) {
-          devolucionCupon = aplicarCupon(codigoCupon.toLowerCase());
+        if (voucherCode) {
+          voucherReturn = applyVoucher(voucherCode.toLowerCase());
         }
     }
     
-    console.log('Reservó correctamente '+ finalqty +' vehiculos por un total de $'+ finaltotal);
-    addMsj('Reservó correctamente '+ finalqty +' vehiculos por un total de $'+ finaltotal, true);
+    console.log('Reservó correctamente '+ finalQty +' vehiculos por un total de $'+ finalTotal);
+    addMsj('Reservó correctamente '+ finalQty +' vehiculos por un total de $'+ finalTotal, true);
     
-    if(devolucionCupon) {
-        console.log(devolucionCupon);
+    if(voucherReturn) {
+        console.log(voucherReturn);
+        addMsj(voucherReturn,true);
     }
 } else {
     console.log('No realizó ninguna reserva.');
     addMsj('No realizó ninguna reserva.',true);
-    
 }
 
 console.log(arrayReservations);
 
 function nextIndexOf(array) {
     return array.length +1;
-};
+}
 
 function availableCars() {
     return arrayCars.map(u => u.name).join(`\n`);
@@ -140,18 +140,18 @@ function saveThis(name, quantityInput, daysInput, dayprice, total){
     addMsj('Se agregó a tu carrito '+ quantityInput +' '+ name +' por '+ daysInput +' días. Total parcial: $'+ total);
 }
 
-function aplicarCupon(codigoCupon) {
-    switch (codigoCupon) {
+function applyVoucher(voucherCode) {
+    switch (voucherCode) {
       case "bariloche":
-        totalDescuento = finaltotal - Number(finaltotal) * 0.1;
-        tieneCupon = false;
-        return `Se le aplicó el descuento "bariloche" del 10% sobre $${finaltotal}.</br>Su monto a pagar es de $${totalDescuento}`;
+        totalDiscount = finalTotal - Number(finalTotal) * 0.1;
+        hasVoucher = false;
+        return `Se le aplicó el descuento "bariloche" del 10% sobre $${finalTotal}. Su monto a pagar es de $${totalDiscount}`;
       case "rentit2022":
-        totalDescuento = finaltotal - Number(finaltotal) * 0.15;
-        tieneCupon = false;
-        return `Se le aplicó el descuento "rentit" del 15% sobre $${finaltotal}.</br>Su monto a pagar es de $${totalDescuento}`;
+        totalDiscount = finalTotal - Number(finalTotal) * 0.15;
+        hasVoucher = false;
+        return `Se le aplicó el descuento "rentit" del 15% sobre $${finalTotal}. Su monto a pagar es de $${totalDiscount}`;
       default:
-        errorCupon = true;
+        cuponError = true;
         return false;
     }
 }
@@ -195,61 +195,62 @@ function loadCards(){
         card.classList.add("text-gray-600");
         card.classList.add("body-font");
 
-    card.innerHTML =    `
-                        <div class="container max-w-7xl my-10 mx-auto px-4 sm:px-6 lg:px-8 card" id="${car.id}">
-                            
-                            <div class="p-5 flex items-center mx-auto bg-white border-b border-gray-200 rounded-lg sm:flex-row flex-col min-width-360">
-                                <!-- Imagen principal tarjeta -->
-                                <div class="w-80 h-auto pr-10 pr-0 sm:pr-10 sm:w-60 inline-flex items-center justify-center flex-shrink-0">
-                                    <img src="https://rently.blob.core.windows.net/hertz/CarModel/26756080-0e17-4e05-8e6a-fa67489347fe.jpg"/>
-                                </div>
+        card.innerHTML =    `
+                            <div class="container max-w-7xl my-10 mx-auto px-4 sm:px-6 lg:px-8 card" id="${car.id}">
                                 
-                                <!-- Caracteristicas del vehiculo -->
-                                <div class="flex-grow sm:text-left text-center mt-6 sm:mt-0">
-                                    <h1 class="text-black text-2xl title-font font-bold mb-2">${car.name}</h1>
-                                    <div class="inline-flex space-x-2">
-                                        <img src="https://img.icons8.com/external-those-icons-lineal-color-those-icons/24/undefined/external-speedometer-cars-components-those-icons-lineal-color-those-icons.png" class="inline-flex "/>
-                                        <p> Kilometraje ilimitado</p>
+                                <div class="p-5 flex items-center mx-auto bg-white border-b border-gray-200 rounded-lg sm:flex-row flex-col min-width-360">
+                                    <!-- Imagen principal tarjeta -->
+                                    <div class="w-80 h-auto pr-10 pr-0 sm:pr-10 sm:w-60 inline-flex items-center justify-center flex-shrink-0">
+                                        <img src="https://rently.blob.core.windows.net/hertz/CarModel/26756080-0e17-4e05-8e6a-fa67489347fe.jpg"/>
                                     </div>
-                                    <div class="py-4 characteristics">
-                                        <div class=" inline-block mr-2">
-                                            <div class="flex pr-2 h-full items-center space-x-2">
-                                                <img src="https://img.icons8.com/external-those-icons-lineal-color-those-icons/24/undefined/external-safety-seat-cars-components-those-icons-lineal-color-those-icons.png"/>
-                                                <p class="title-font font-medium">${car.passengers}</p>
-                                            </div>
+                                    
+                                    <!-- Caracteristicas del vehiculo -->
+                                    <div class="flex-grow sm:text-left text-center mt-6 sm:mt-0">
+                                        <h1 class="text-black text-2xl title-font font-bold mb-2">${car.name}</h1>
+                                        <div class="inline-flex space-x-2">
+                                            <img src="https://img.icons8.com/external-those-icons-lineal-color-those-icons/24/undefined/external-speedometer-cars-components-those-icons-lineal-color-those-icons.png" class="inline-flex "/>
+                                            <p> Kilometraje ilimitado</p>
                                         </div>
-                                        <div class="inline-block mr-2">
-                                            <div class="flex  pr-2 h-full items-center space-x-2">
-                                                <img src="https://img.icons8.com/external-those-icons-lineal-color-those-icons/24/undefined/external-fuel-cars-components-those-icons-lineal-color-those-icons.png"/>
-                                                <p class="title-font font-medium">${car.fuel}</p>
+                                        <div class="py-4 characteristics">
+                                            <div class=" inline-block mr-2">
+                                                <div class="flex pr-2 h-full items-center space-x-2">
+                                                    <img src="https://img.icons8.com/external-those-icons-lineal-color-those-icons/24/undefined/external-safety-seat-cars-components-those-icons-lineal-color-those-icons.png"/>
+                                                    <p class="title-font font-medium">${car.passengers}</p>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="inline-block mr-2">
-                                            <div class="flex  pr-2 h-full items-center space-x-2">
-                                                <img src="https://img.icons8.com/external-those-icons-lineal-color-those-icons/24/undefined/external-gearshift-cars-components-those-icons-lineal-color-those-icons-3.png"/>
-                                                <p class="title-font font-medium">${car.transmission}</p>
+                                            <div class="inline-block mr-2">
+                                                <div class="flex  pr-2 h-full items-center space-x-2">
+                                                    <img src="https://img.icons8.com/external-those-icons-lineal-color-those-icons/24/undefined/external-fuel-cars-components-those-icons-lineal-color-those-icons.png"/>
+                                                    <p class="title-font font-medium">${car.fuel}</p>
+                                                </div>
+                                            </div>
+                                            <div class="inline-block mr-2">
+                                                <div class="flex  pr-2 h-full items-center space-x-2">
+                                                    <img src="https://img.icons8.com/external-those-icons-lineal-color-those-icons/24/undefined/external-gearshift-cars-components-those-icons-lineal-color-those-icons-3.png"/>
+                                                    <p class="title-font font-medium">${car.transmission}</p>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div class="sm:text-right text-center ml-0 mt-6 sm:mt-0 space-x-2 w-15 max-w-sm">
-                                    <button type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-cyan-500 text-base font-medium text-white hover:bg-cyan-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-200 sm:ml-3 sm:w-auto sm:text-sm">Alquilar</button>
-                                    <a class="mt-3 text-indigo-500 inline-flex items-center">Mas info
-                                        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 ml-2" viewBox="0 0 24 24">
-                                            <path d="M5 12h14M12 5l7 7-7 7"></path>
-                                        </svg>
-                                        </a>
-                                </div>
+                                    <div class="sm:text-right text-center ml-0 mt-6 sm:mt-0 space-x-2 w-15 max-w-sm">
+                                        <button type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-cyan-500 text-base font-medium text-white hover:bg-cyan-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-200 sm:ml-3 sm:w-auto sm:text-sm">Alquilar</button>
+                                        <a class="mt-3 text-indigo-500 inline-flex items-center">Mas info
+                                            <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 ml-2" viewBox="0 0 24 24">
+                                                <path d="M5 12h14M12 5l7 7-7 7"></path>
+                                            </svg>
+                                            </a>
+                                    </div>
 
+                                </div>
                             </div>
-                        </div>
-                        `;
+                            `;
         destination.appendChild(card);
     }
 
-    let cards = document.getElementsByClassName("card");
+    //Agregamos la caracteristica ABS si corresponde
 
+    let cards = document.getElementsByClassName("card");
     for (let card of cards) {
         for (let car of arrayCars) {
             if(card.id == car.id && car.abs == true){
@@ -265,5 +266,6 @@ function loadCards(){
             }
         }
     }
-}   
+}
+loadCards();
 
