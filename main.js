@@ -1,6 +1,3 @@
-//Git ok?
-//Git version contro ok?
-
 class Car {
     constructor (id, carModel, dayprice, passengers, fuel, transmission, abs){
         this.id = parseInt(id);
@@ -32,6 +29,35 @@ class Reservation {
 
 const arrayReservations = [];
 let keepBuying = true;
+
+
+/*
+HTMLmodelInput.addEventListener("click", () => {
+console.log(HTMLmodelInput.value);
+})
+*/
+const HTMLsearchForm = document.getElementById('searchForm'); 
+//const HTMLsearchForm = document.getElementById('searchForm'); 
+
+const HTMLquantityInput = document.getElementById('quantityInput');
+const HTMLdaysInput = document.getElementById('daysInput');
+const HTMLclearFormBtn = document.getElementById('clearForm');
+HTMLsearchForm.addEventListener("submit", formValidate);
+
+HTMLclearFormBtn.addEventListener("click", () => {
+    HTMLsearchForm.reset();
+    })
+
+function formValidate(event){
+    event.preventDefault();
+    const search = {
+        model: HTMLquantityInput.value,
+        quantity: edad.value,
+        days: 
+    }
+}
+
+
 
 do {
     let reserveThis;
