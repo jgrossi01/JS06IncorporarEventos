@@ -133,7 +133,7 @@
                         </div>
 
                         <!-- Formulario reserva -->
-                        <form id="searchForm">
+                        <form id="bookingForm">
                             <div class="relative bg-white px-5 pb-5 pt-2 rounded-md">
                                 <div class="flex flex-col my-3">
                                     <label for="lugarEntrega"
@@ -147,7 +147,7 @@
                                 <div class="flex flex-col my-3">
                                     <label for="modelInput"
                                         class="text-gray-800 text-sm font-bold leading-tight tracking-normal mb-2">Modelo</label>
-                                    <select id="modelInput"
+                                    <select id="modelInput" name="modelInput"
                                         class="bg-white border border-gray-200 text-gray-600 rounded-full border border-gray-300 focus:ring-gray-500 focus:border-gray-500 active:ring-gray-500 active:border-gray-500 block w-full px-4 py-2.5"
                                         id="grid-state">
 
@@ -158,7 +158,7 @@
                                     <label for="quantityInput"
                                         class="text-gray-800 text-sm font-bold leading-tight tracking-normal mb-2">Cantidad
                                         de vehiculos</label>
-                                    <input id="quantityInput" autocomplete="off"
+                                    <input id="quantityInput" name="quantityInput"
                                         class="text-gray-600 bg-white border border-gray-300 sm:text-sm rounded-full focus:ring-gray-500 focus:border-gray-500 block w-full px-4 py-2.5"
                                         placeholder="Ingrese la cantidad de vehiculos" value="1" />
                                 </div>
@@ -167,7 +167,7 @@
                                     <label for="daysInput"
                                         class="text-gray-800 text-sm font-bold leading-tight tracking-normal mb-2">Cantidad
                                         de días</label>
-                                    <input id="daysInput" autocomplete="off"
+                                    <input id="daysInput" name="daysInput"
                                         class="text-gray-600 bg-white border border-gray-300 sm:text-sm rounded-full focus:ring-gray-500 focus:border-gray-500 block px-4 py-2.5"
                                         placeholder="Ingrese la cantidad de dias" />
                                 </div>
@@ -209,9 +209,9 @@
                                 <!-- Botones formulario -->
                                 <div class="flex flex-col mt-5">
                                     <div class="sm:flex sm:flex-row-reverse">
-                                        <button type="button"
+                                        <button type="submit"
                                             class="w-full inline-flex justify-center rounded-full border border-transparent shadow-sm px-4 py-2 bg-cyan-500 text-base font-medium text-white hover:bg-cyan-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-200 sm:ml-3 sm:w-auto sm:text-sm">Buscar</button>
-                                        <button type="button" id="clearForm"
+                                        <button type="button" id="clearFormBtn"
                                             class="mt-3 w-full inline-flex justify-center rounded-full border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">Limpiar</button>
                                     </div>
                                 </div>
@@ -221,6 +221,13 @@
                                     role="alert" id="msj">
                                     <span class="block sm:inline font-medium" id="msjmsj"></span>
                                     <strong class="font-bold font-medium" id="msjfinal"></strong>
+                                </div>
+
+                                <!-- Mensaje -->
+                                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 mt-5 flex-grow rounded hidden"
+                                    role="alert" id="errormsj">
+                                    <span class="block sm:inline font-medium" id="errormsjmsj"></span>
+                                    <strong class="font-bold font-medium" id="errormsjfinal"></strong>
                                 </div>
 
                             </div>

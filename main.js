@@ -28,91 +28,69 @@ class Reservation {
 }
 
 const arrayReservations = [];
-let keepBuying = true;
+
+// LISTENERS
 
 
-/*
-HTMLmodelInput.addEventListener("click", () => {
-console.log(HTMLmodelInput.value);
-})
-*/
-const HTMLsearchForm = document.getElementById('searchForm'); 
-//const HTMLsearchForm = document.getElementById('searchForm'); 
+const bookingForm = document.getElementById('bookingForm');
+const clearFormBtn = document.getElementById('clearFormBtn');
 
-const HTMLquantityInput = document.getElementById('quantityInput');
-const HTMLdaysInput = document.getElementById('daysInput');
-const HTMLclearFormBtn = document.getElementById('clearForm');
-HTMLsearchForm.addEventListener("submit", formValidate);
+clearFormBtn.addEventListener("click", () => {
+    bookingForm.reset();
+});
 
-HTMLclearFormBtn.addEventListener("click", () => {
-    HTMLsearchForm.reset();
-    })
+bookingForm.addEventListener("submit", formValidate);
+
+let modelInput;
+let quantityInput;
+let daysInput;
+let finalQty;
+let finalTotal;
 
 function formValidate(event){
+
     event.preventDefault();
-    const search = {
-        model: HTMLquantityInput.value,
-        quantity: edad.value,
-        days: 
-    }
-}
 
-
-
-do {
+    modelInput = document.getElementById('modelInput').value;
+    quantityInput = document.getElementById('quantityInput').value;
+    daysInput = document.getElementById('daysInput').value;
+    
+    
+    const errors = [];
     let reserveThis;
-    let modelInput = prompt("Que modelo desea reservar? Podemos ofrecerle los siguientes:\n" + availableCars());
 
     if (modelInput){
         modelInput = modelInput.toLowerCase();
         reserveThis = arrayCars.find(model => model.name.toLowerCase() === modelInput);
-        console.log(reserveThis)
-        while(!reserveThis && keepBuying) {
-            keepBuying = confirm('No encontramos el modelo solicitado. Desea seguir comprando?')
-            if(keepBuying){
-                modelInput = prompt("Que modelo desea reservar?");
-                modelInput = modelInput.toLowerCase();
-                reserveThis = arrayCars.find(model => model.name.toLowerCase() === modelInput);
-            } else {
-                break;
-            }
-        }
+        
+        if(!reserveThis) {
+            errors.push('No encontramos el modelo solicitado1');
+        }  
+        
     }
+    
+    if(!quantityInput || isNaN(quantityInput) || quantityInput < 1){
+        errors.push(`Ingrese una cantidad de vehiculos valida.`); 
+    } 
 
-    let quantityInput;
-    if(reserveThis){
-        quantityInput = prompt(`Cuantos ${modelInput} precisa reservar?`);
-        while (!quantityInput || isNaN(quantityInput) || quantityInput < 1){
-            quantityInput = prompt(`Ingrese un número válido. Cuantos ${modelInput} precisa reservar?`);
-        } 
-    } else {
-        break;
-    }
+    if(!daysInput || isNaN(daysInput) || daysInput < 1){
+        errors.push(`Ingrese una cantidad de días válida.`);
+    } 
 
-    let daysInput;
-    if(quantityInput){
-        daysInput = prompt(`Por cuantos días precisa los ${quantityInput} ${modelInput}?`);
-        while (!daysInput || isNaN(daysInput) || daysInput < 1){
-            daysInput = prompt(`Ingrese un número válido. Por cuantos días precisa los ${quantityInput} ${modelInput}?`);
-        } 
-    } else {
-        break;
-    }
-
-    if(reserveThis && quantityInput && daysInput) {
+    if(errors.length === 0) {
         
         let name = reserveThis.name;
         let dayprice = reserveThis.dayprice;
         let total = Number(reserveThis.dayprice) * daysInput * quantityInput;
-        saveThis(name, quantityInput, daysInput, dayprice, total);   
-
+        saveThis(name, quantityInput, daysInput, dayprice, total);  
     } else {
-        alert('Algo salio mal');
+        
+        errors.forEach(e => addErrorMsj(e,true));
     }
+}
 
-    keepBuying = confirm('Quiere seguir comprando?');
-} while(keepBuying);
 
+/*
 let hasVoucher;
 let cuponError;
 let voucherReturn;
@@ -151,6 +129,7 @@ if (arrayReservations.length > 0){
     console.log('No realizó ninguna reserva.');
     addMsj('No realizó ninguna reserva.',true);
 }
+*/
 
 console.log(arrayReservations);
 
@@ -163,12 +142,20 @@ function availableCars() {
 }
 
 function saveThis(name, quantityInput, daysInput, dayprice, total){
+    errors = [];
     let id = nextIndexOf(arrayReservations);
     arrayReservations.push(new Reservation (id, name, quantityInput, daysInput, dayprice, total));
     console.log('Se agregó a tu carrito '+ quantityInput +' '+ name +' por '+ daysInput +' días. Total parcial: $'+ total);
-    addMsj('Se agregó a tu carrito '+ quantityInput +' '+ name +' por '+ daysInput +' días. Total parcial: $'+ total);
+    addMsj('Se agregó a tu carrito '+ quantityInput +' '+ name +' por '+ daysInput +' días. Total parcial: $'+ total,false);
+
+    finalQty = arrayReservations.reduce((a, b) => a + b['quantity'], 0);
+    finalTotal = arrayReservations.reduce((a, b) => a + b['total'], 0);
+
+    addMsj('Reservó correctamente '+ finalQty +' vehiculos por un total de $'+ finalTotal, true);
+    clearMsj(true);
 }
 
+/*
 function applyVoucher(voucherCode) {
     switch (voucherCode) {
       case "bariloche":
@@ -183,24 +170,55 @@ function applyVoucher(voucherCode) {
         cuponError = true;
         return false;
     }
-}
+}/*
 
-/* NUEVO */
+/* 05 Interaccion con HTML */
 
-function addMsj (msj, final = null){
-    const msjbox = document.getElementById('msj');
-    const msjmsj = document.getElementById('msjmsj');
-    const msjfinal = document.getElementById('msjfinal');    
-    
-    if (msjbox.classList.contains('hidden')) {
-        msjbox.classList.remove("hidden");
+
+const msjBox = document.getElementById('msj');
+const msjMsj = document.getElementById('msjmsj');
+const msjFinal = document.getElementById('msjfinal');  
+
+const errorMsjBox = document.getElementById('errormsj');
+const errorMsjMsj = document.getElementById('errormsjmsj');
+const errorMsjFinal = document.getElementById('errormsjfinal'); 
+
+
+
+function addErrorMsj (msj, final = null){ 
+    if (errorMsjBox.classList.contains('hidden')) {
+        errorMsjBox.classList.remove("hidden");
     }
 
     if (final){
-        msjfinal.innerHTML += '<p>'+msj+'</p>';
+        errorMsjFinal.innerHTML = '<p>'+msj+'</p>';
     } else {
-        msjmsj.innerHTML += '<p>'+msj+'</p>';
+        errorMsjMsj.innerHTML += '<p>'+msj+'</p>';
+    }    
+}
+
+function addMsj (msj, final = null) {
+    if (msjBox.classList.contains('hidden')) {
+        msjBox.classList.remove("hidden");
     }
+
+    if (final){
+        msjFinal.innerHTML = '<p>'+msj+'</p>';
+    } else {
+        msjMsj.innerHTML += '<p>'+msj+'</p>';
+    } 
+}
+
+function clearMsj(error = null){
+    let destiny;
+    if(error){
+        destiny = errorMsjFinal;
+    } else {
+        destiny = msjMsj;
+    }
+    destiny.innerHTML = '';
+    destiny.innerHTML = '';
+    destiny.parentElement.classList.add("hidden");
 }
 
 function createLi (){
